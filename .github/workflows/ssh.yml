@@ -1,0 +1,32 @@
+name: SSH Deployment with Username and Password
+
+on:
+  push:
+    branches:
+      - main  # Set the branch for deployment
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install SSH client and sshpass
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y openssh-client sshpass
+
+    - name: Verify sshpass installation
+      run: sshpass -V
+
+    - name: SSH and Execute Commands
+      env:
+        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+      run: |
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << EOF
+          echo "SSH connection established."
+          # Add the commands you want to run on the server here.
+          echo "Deployment commands executed."
+        EOF

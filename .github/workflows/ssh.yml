@@ -21,6 +21,9 @@ jobs:
     - name: Verify sshpass installation
       run: sshpass -V
 
+    - name: ip
+      run: hostname -I
+
     - name: SSH and Execute Commands
       env:
         SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}

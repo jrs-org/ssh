@@ -1,4 +1,4 @@
-name: SSH Deployment with Username and Password
+name: SSH Deployment Direct
 
 on:
   push:
@@ -21,14 +21,19 @@ jobs:
     - name: Verify sshpass installation
       run: sshpass -V
 
-    - name: ip
-      run: hostname -I
+    - name: Setup SSH Key
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      run: |
+        mkdir -p ~/.ssh
+        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+        ssh-add ~/.ssh/id_rsa
 
     - name: SSH and Execute Commands
-      env:
-        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
       run: |
-        sshpass -p"$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << EOF
+        ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << EOF
           echo "SSH connection established."
           # Add the commands you want to run on the server here.
           echo "Deployment commands executed."

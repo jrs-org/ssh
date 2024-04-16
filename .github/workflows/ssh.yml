@@ -21,13 +21,13 @@ jobs:
     - name: Verify sshpass installation
       run: sshpass -V
 
-    # - name: Setup SSH Key
-    #   env:
-    #     SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-    #   run: |
-    #     mkdir -p ~/.ssh
-    #     echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-    #     chmod 600 ~/.ssh/id_rsa
+    - name: Setup SSH Key
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      run: |
+        mkdir -p ~/.ssh
+        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
     #     ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
     #     ssh-add ~/.ssh/id_rsa
 
